@@ -1,0 +1,40 @@
+# Visual Studio user and workspace files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build output and intermediate files
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+ARM64/
+
+# Native C++ build artifacts
+*.aps
+*.bsc
+*.ilk
+*.idb
+*.ipdb
+*.iobj
+*.obj
+*.pdb
+*.res
+*.tlog/
+*.lastbuildstate
+*.log
+*.recipe
+*.enc
+RC[a-zA-Z0-9]*
+
+# CMake and generated build directories
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+
+# Code analysis and test output
+TestResults/
