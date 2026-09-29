@@ -1,0 +1,8 @@
+﻿<Solution>
+  <Configurations>
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="CppLab2/CppLab2.vcxproj" Id="9ef59ce0-1daa-4c54-968f-28cb42aab52e" />
+</Solution>
