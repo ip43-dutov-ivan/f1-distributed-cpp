@@ -212,6 +212,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Benchmark.h" />
     <ClInclude Include="CppLab3.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
@@ -220,6 +221,7 @@
     <ClInclude Include="Workers.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Benchmark.cpp" />
     <ClCompile Include="CppLab3.cpp" />
     <ClCompile Include="Workers.cpp" />
     <ClCompile Include="pch.cpp">
