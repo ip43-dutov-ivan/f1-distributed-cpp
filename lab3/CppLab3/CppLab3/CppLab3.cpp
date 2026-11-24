@@ -5,14 +5,15 @@
 #include "framework.h"
 #include "CppLab3.h"
 #include "Workers.h"
+#include "Benchmark.h"
 #include <format>
 
 #define MAX_LOADSTRING 100
 
 namespace WindowConfig
 {
-    inline constexpr int Width = 400;
-    inline constexpr int Height = 300;
+    inline constexpr int Width = 560;
+    inline constexpr int Height = 420;
     inline constexpr DWORD Style = WS_OVERLAPPEDWINDOW | WS_MINIMIZEBOX;
 }
 
@@ -183,6 +184,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 WorkersRemove(WorkerKind::Display);
                 InvalidateRect(hWnd, nullptr, TRUE);
                 break;
+            case IDM_THREADS_PAUSE:
+                WorkersPause();
+                InvalidateRect(hWnd, nullptr, TRUE);
+                break;
+            case IDM_THREADS_RESUME:
+                WorkersResume();
+                InvalidateRect(hWnd, nullptr, TRUE);
+                break;
+            case IDM_THREADS_CRASH:
+                WorkersSimulateCrash();
+                InvalidateRect(hWnd, nullptr, TRUE);
+                break;
+            case IDM_RUN_BENCHMARK:
+                BenchmarkStart(hWnd);
+                InvalidateRect(hWnd, nullptr, TRUE);
+                break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
@@ -200,13 +217,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hdc = BeginPaint(hWnd, &ps);
 
             auto output = std::format(
-                L"Readers: {}   Displays: {}\n",
+                L"Readers: {}\tDisplays: {}\tState: {}\n",
                 WorkersCount(WorkerKind::Reader),
-                WorkersCount(WorkerKind::Display)
+                WorkersCount(WorkerKind::Display),
+                WorkersIsPaused() ? L"Paused" : L"Running"
             );
+            const auto status = WorkersStatusLine();
+            if (!status.empty())
+            {
+                output += L"\n" + status;
+            }
             for (const auto& line : WorkersDisplayLines())
             {
                 output += L"\n" + line;
+            }
+
+            const auto benchLines = BenchmarkResultLines();
+            if (!benchLines.empty())
+            {
+                output += L"\n";
+                for (const auto& line : benchLines)
+                {
+                    output += L"\n" + line;
+                }
             }
 
             RECT rect;
@@ -219,6 +252,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_TIME_UPDATED:
         WorkersHandleTime(static_cast<DWORD>(wParam));
+        InvalidateRect(hWnd, nullptr, TRUE);
+        break;
+    case WM_WORKER_FAULT:
+        WorkersHandleFault(static_cast<DWORD>(wParam), static_cast<DWORD>(lParam));
+        InvalidateRect(hWnd, nullptr, TRUE);
+        break;
+    case WM_BENCHMARK_DONE:
         InvalidateRect(hWnd, nullptr, TRUE);
         break;
     case WM_DESTROY:
