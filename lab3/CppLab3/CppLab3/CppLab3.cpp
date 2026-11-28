@@ -84,12 +84,12 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbClsExtra     = 0;
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(nullptr, IDI_HAND);
-    wcex.hCursor        = LoadCursor(nullptr, IDC_WAIT);
+    wcex.hIcon          = LoadIcon(nullptr, IDI_APPLICATION);
+    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_CPPLAB3);
     wcex.lpszClassName  = szWindowClass;
-    wcex.hIconSm        = LoadIcon(nullptr, IDI_HAND);
+    wcex.hIconSm        = LoadIcon(nullptr, IDI_APPLICATION);
 
     return RegisterClassExW(&wcex);
 }
@@ -245,7 +245,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             RECT rect;
             GetClientRect(hWnd, &rect);
             SetBkMode(hdc, TRANSPARENT);
-            DrawTextW(hdc, output.c_str(), -1, &rect, DT_LEFT | DT_TOP);
+            HFONT font = CreateFontW(-14, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+                                     OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY,
+                                     FIXED_PITCH | FF_MODERN, L"Consolas");
+            HGDIOBJ oldFont = SelectObject(hdc, font);
+            DrawTextW(hdc, output.c_str(), -1, &rect, DT_LEFT | DT_TOP | DT_EXPANDTABS);
+            SelectObject(hdc, oldFont);
+            DeleteObject(font);
 
             EndPaint(hWnd, &ps);
         }
